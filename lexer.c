@@ -5,7 +5,11 @@
 
 char *lexer_getalphanum(buffer_t *buffer) {
   buf_skipblank(buffer);
-  buf_lock(buffer);
+  bool islocked = false;
+  if (!buffer->islocked) {
+    buf_lock(buffer);
+    islocked = true;
+  }
   size_t start_pos = buffer->it;  
   size_t length = 0;
 
@@ -15,6 +19,7 @@ char *lexer_getalphanum(buffer_t *buffer) {
     if (isalnum(c)) {
       length++;
     } else {
+      if(islocked);
       buf_rollback(buffer, 1);
       break;
     }
@@ -22,30 +27,34 @@ char *lexer_getalphanum(buffer_t *buffer) {
   } while (!buf_eof_strict(buffer));
 
   if (length == 0) {
-    buf_unlock(buffer);
-    return NULL;
+    if (islocked) {
+      buf_unlock(buffer);
+      return NULL;
+    }
   }
 
   char *result = (char *)malloc(length + 1);
   if (!result) {
-     // TODO message erreur
+     fprintf(stderr, "Erreur de Malloc ! Impossible d'allouer de la mémoire.\n");
      exit(1);
   }
 
   memcpy(result, buffer->content + start_pos, length);
   result[length] = '\0';
-
-  buf_unlock(buffer);
+  
+  if (islocked) {
+    buf_unlock(buffer);
+  }
   return result;
 }
 
-// char *lexer_getalphanum_rollback(buffer_t *buffer) {
-//     buf_lock(buffer);
-//     size_t start_pos = buffer->it;
-//     char *result = lexer_getalphanum(buffer);
-//     buf_rollback_and_unlock(buffer, buffer->it - start_pos);
-//     return result;
-// }
+char *lexer_getalphanum_rollback(buffer_t *buffer) {
+    size_t start_pos = buffer->it;
+    buf_lock(buffer);
+    char *result = lexer_getalphanum(buffer);
+    buf_rollback_and_unlock(buffer, buffer->it - start_pos);
+    return result;
+}
 
 // char *lexer_getop(buffer_t *buffer) {
 //     buf_lock(buffer);
