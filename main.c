@@ -16,18 +16,10 @@ int main() {
     buf_init(&buffer, file);
 
     // Appel de lexer_getalphanum
-    char *alphanum_rb = lexer_getalphanum_rollback(&buffer);
     char *alphanum = lexer_getalphanum(&buffer);
     char *alphanum2 = lexer_getalphanum(&buffer);
     char *alphanum3 = lexer_getalphanum(&buffer);
     char *alphanum4 = lexer_getalphanum(&buffer);
-
-    if (alphanum_rb != NULL) {
-        printf("Chaine trouvee : %s\n", alphanum_rb);
-        free(alphanum_rb);
-    } else {
-        printf("Pas de chaine trouvee.\n");
-    }
 
     if (alphanum != NULL) {
         printf("Chaine trouvee : %s\n", alphanum);

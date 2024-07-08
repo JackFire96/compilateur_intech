@@ -11,23 +11,25 @@ char *lexer_getalphanum(buffer_t *buffer) {
 
   do {
     char c = buf_getchar(buffer);
+
     if (isalnum(c)) {
       length++;
     } else {
       buf_rollback(buffer, 1);
       break;
     }
-  } while (!buf_eof(buffer));
+
+  } while (!buf_eof_strict(buffer));
 
   if (length == 0) {
-    buf_rollback_and_unlock(buffer, buffer->it - start_pos);
+    buf_unlock(buffer);
     return NULL;
   }
 
   char *result = (char *)malloc(length + 1);
   if (!result) {
-     buf_rollback_and_unlock(buffer, buffer->it - start_pos);
-     return NULL;
+     // TODO message erreur
+     exit(1);
   }
 
   memcpy(result, buffer->content + start_pos, length);
@@ -37,13 +39,13 @@ char *lexer_getalphanum(buffer_t *buffer) {
   return result;
 }
 
-char *lexer_getalphanum_rollback(buffer_t *buffer) {
-    buf_lock(buffer);
-    size_t start_pos = buffer->it;
-    char *result = lexer_getalphanum(buffer);
-    buf_rollback_and_unlock(buffer, buffer->it - start_pos);
-    return result;
-}
+// char *lexer_getalphanum_rollback(buffer_t *buffer) {
+//     buf_lock(buffer);
+//     size_t start_pos = buffer->it;
+//     char *result = lexer_getalphanum(buffer);
+//     buf_rollback_and_unlock(buffer, buffer->it - start_pos);
+//     return result;
+// }
 
 // char *lexer_getop(buffer_t *buffer) {
 //     buf_lock(buffer);
