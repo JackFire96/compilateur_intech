@@ -37,13 +37,13 @@ char *lexer_getalphanum(buffer_t *buffer) {
   return result;
 }
 
-// char *lexer_getalphanum_rollback(buffer_t *buffer) {
-//     buf_lock(buffer);
-//     size_t start_pos = buffer->it;
-//     char *result = lexer_getalphanum(buffer);
-//     buf_rollback_and_unlock(buffer, buffer->it - start_pos);
-//     return result;
-// }
+char *lexer_getalphanum_rollback(buffer_t *buffer) {
+    buf_lock(buffer);
+    size_t start_pos = buffer->it;
+    char *result = lexer_getalphanum(buffer);
+    buf_rollback_and_unlock(buffer, buffer->it - start_pos);
+    return result;
+}
 
 // char *lexer_getop(buffer_t *buffer) {
 //     buf_lock(buffer);
