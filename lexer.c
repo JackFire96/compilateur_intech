@@ -29,8 +29,8 @@ char *lexer_getalphanum(buffer_t *buffer) {
   if (length == 0) {
     if (islocked) {
       buf_unlock(buffer);
-      return NULL;
     }
+    return NULL;
   }
 
   char *result = (char *)malloc(length + 1);
@@ -56,75 +56,80 @@ char *lexer_getalphanum_rollback(buffer_t *buffer) {
     return result;
 }
 
-// char *lexer_getop(buffer_t *buffer) {
-//     buf_lock(buffer);
-//     size_t start_pos = buffer->it;
-//     char c = buf_getchar(buffer);
-//     char *op = NULL;
 
-//     if (c == '+' || c == '-' || c == '*' || c == '/' || c == '=') {
-//         op = (char *)malloc(2);
-//         if (!op) {
-//             buf_rollback_and_unlock(buffer, buffer->it - start_pos);
-//             return NULL;
-//         }
-//         op[0] = c;
-//         op[1] = '\0';
-//     } else {
-//         buf_rollback(buffer, 1);
-//     }
+char *lexer_getop(buffer_t *buffer) {
+    buf_skipblank(buffer);
+    buf_lock(buffer);
+    size_t start_pos = buffer->it;
+    char first_char = buf_getchar(buffer);
 
-//     if (!op) {
-//         buf_rollback_and_unlock(buffer, buffer->it - start_pos);
-//     } else {
-//         buf_unlock(buffer);
-//     }
+    char second_char = buf_getchar(buffer);
+    buf_rollback(buffer, 1);  // Always rollback the second character
 
-//     return op;
-// }
+    char *result = NULL;
+    size_t length = 1;
 
-// long lexer_getnumber(buffer_t *buffer) {
-//     buf_lock(buffer);
-//     size_t start_pos = buffer->it;
-//     size_t length = 0;
-//     int negative = 0;
+    switch (first_char) {
+        case '+':
+        case '-':
+            if (second_char == '+' || second_char == '-') {
+                length = 2;
+                buf_getchar(buffer);  // Consume the second character
+            }
+            break;
+        case '=':
+        case '<':
+        case '>':
+            if (second_char == '=') {
+                length = 2;
+                buf_getchar(buffer);  // Consume the second character
+            }
+            break;
+        case '*':
+        case '/':
+            break;
+        default:
+            buf_rollback_and_unlock(buffer, buffer->it - start_pos);
+            return NULL;
+    }
 
-//     char c = buf_getchar(buffer);
-//     if (c == '-') {
-//         negative = 1;
-//         length++;
-//     } else {
-//         buf_rollback(buffer, 1);
-//     }
+    result = (char *)malloc(length + 1);  
+    if (!result) {
+        fprintf(stderr, "Erreur de malloc : impossible d'allouer la mémoire.\n");
+        exit(1);
+    }
 
-//     while (true) {
-//         c = buf_getchar(buffer);
-//         if (isdigit(c)) {
-//             length++;
-//         } else {
-//             buf_rollback(buffer, 1);
-//             break;
-//         }
-//     }
+    memcpy(result, buffer->content + start_pos, length);
+    result[length] = '\0';
 
-//     if (length == 0 || (length == 1 && negative)) {
-//         buf_rollback_and_unlock(buffer, buffer->it - start_pos);
-//         return 0;
-//     }
+    buf_unlock(buffer);
+    return result;
+}
 
-//     char *num_str = (char *)malloc(length + 1);
-//     if (!num_str) {
-//         buf_rollback_and_unlock(buffer, buffer->it - start_pos);
-//         return 0;
-//     }
 
-//     memcpy(num_str, buffer->content + start_pos, length);
-//     num_str[length] = '\0';
+long lexer_getnumber(buffer_t *buffer) {
+  char *alphanum = lexer_getalphanum(buffer);
+  size_t length = strlen(alphanum);
+  char *numberFound = (char *)malloc(length + 1);
+  if (!numberFound) {
+    fprintf(stderr, "Erreur de malloc : impossible d'allouer la mémoire.\n");
+    exit(1);
+  }
 
-//     char *endptr;
-//     long result = strtol(num_str, &endptr, 10);
-//     free(num_str);
+  size_t index = 0;
+  for (size_t i = 0; i < length; i++) {
+  if (isdigit(alphanum[i]) || (i == 0 && alphanum[i] == '-')) {
+    numberFound[index++] = alphanum[i];
+  } else {
+    break; // Arrêter dès qu'on rencontre un caractère non numérique
+    }
+  }
+  numberFound[index] = '\0';
+  long numberResult = strtol(numberFound, NULL, 10);
+  return numberResult;
 
-//     buf_unlock(buffer);
-//     return result;
-// }
+  // Récupérer le resultat de getalphanum
+  // Vérifier si le caractère est un nombre
+      // Recommencer tant que c'est un nombre
+  // Renvoyer le nombre trouvé
+}

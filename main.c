@@ -15,33 +15,40 @@ int main() {
     buffer_t buffer;
     buf_init(&buffer, file);
 
-    // Appel de lexer_getalphanum
     char *alphanum_rb = lexer_getalphanum_rollback(&buffer);
-    char *alphanum_rb2 = lexer_getalphanum_rollback(&buffer);
     char *alphanum = lexer_getalphanum(&buffer);
+    char *op = lexer_getop(&buffer);
+    long num = lexer_getnumber(&buffer);
     char *alphanum2 = lexer_getalphanum(&buffer);
-    char *alphanum3 = lexer_getalphanum(&buffer);
-    char *alphanum4 = lexer_getalphanum(&buffer);
+    char *op2 = lexer_getop(&buffer);
+    
+    
 
     if (alphanum_rb != NULL) {
-        printf("Chaine_rb trouvee : %s\n", alphanum_rb);
+        printf("Chaine (ROLLBACK) trouvee : %s\n", alphanum_rb);
         free(alphanum_rb);
     } else {
-        printf("Pas de chaine_rb trouvee.\n");
-    }
-    
-    if (alphanum_rb2 != NULL) {
-        printf("Chaine_rb2 trouvee : %s\n", alphanum_rb2);
-        free(alphanum_rb2);
-    } else {
-        printf("Pas de chaine_rb2 trouvee.\n");
+        printf("Pas de chaine (ROLLEBACK) trouvee.\n");
     }
 
     if (alphanum != NULL) {
-        printf("Chaine trouvee : %s\n", alphanum);
+        printf("Chaine 1 trouvee : %s\n", alphanum);
         free(alphanum);
     } else {
-        printf("Pas de chaine trouvee.\n");
+        printf("Pas de chaine 1 trouvee.\n");
+    }
+
+     if (op != NULL) {
+        printf("Chaine (OP) trouvee : %s\n", op);
+        free(op);
+    } else {
+        printf("Pas de chaine (OP) trouvee.\n");
+    }
+
+    if (num >= 0) {
+        printf("Chaine_nb trouvee : %d\n", num);
+    } else {
+        printf("Pas de chaine_nb trouvee.\n");
     }
 
     if (alphanum2 != NULL) {
@@ -51,19 +58,13 @@ int main() {
         printf("Pas de chaine 2 trouvee.\n");
     }
 
-    if (alphanum3 != NULL) {
-        printf("Chaine 3 trouvee : %s\n", alphanum3);
-        free(alphanum3);
+    if (op2 != NULL) {
+        printf("Chaine (OP2) trouvee : %s\n", op2);
+        free(op2);
     } else {
-        printf("Pas de chaine 3 trouvee.\n");
+        printf("Pas de chaine (OP2) trouvee.\n");
     }
-
-    if (alphanum4 != NULL) {
-        printf("Chaine 4 trouvee : %s\n", alphanum4);
-        free(alphanum4);
-    } else {
-        printf("Pas de chaine 4 trouvee.\n");
-    }
+    
 
     // Fermeture du fichier et nettoyage des ressources
     fclose(file);
