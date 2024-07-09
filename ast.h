@@ -18,6 +18,29 @@ typedef enum {
   AST_RETURN
 } ast_node_type_e;
 
+typedef enum {
+  INT,
+  VOID
+} var_type_e;
+
+typedef enum {
+  ADDITION,
+  SOUSTRACTION,
+  MULTIPLICATION,
+  DIVISION,
+  INSTANTIATION,
+  EQUAL,
+  LOWERTHAN,
+  HIGHERTHAN,
+} ast_binary_e;
+
+typedef enum {
+  INCREMENT,
+  DECREMENT,
+  NEGATIV,
+  POSITIV
+} ast_unary_e;
+
 typedef struct ast_t {
   ast_node_type_e type;
   union {
@@ -32,7 +55,7 @@ typedef struct ast_t {
       struct ast_t *right;
     } binary;
     struct {
-      char op;
+      ast_unary_e op;
       struct ast_t *operand;
     } unary;
     struct {
