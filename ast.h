@@ -1,3 +1,7 @@
+#ifndef AST_H
+
+#include "buffer.h"
+
 typedef enum {
   AST_VOID,
   AST_INTEGER,
@@ -87,3 +91,7 @@ ast_t *ast_new_loop (ast_t *condition, ast_t *stmt);
 ast_t *ast_new_return (ast_t *expr);
 ast_list_t *ast_list_new_node (ast_t *elem);
 ast_list_t *ast_list_add (ast_list_t **list, ast_t *elem);
+
+
+#define AST_H
+#endif
