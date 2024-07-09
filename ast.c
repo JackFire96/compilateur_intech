@@ -148,3 +148,15 @@ ast_t *ast_new_return (ast_t *expr) {
   retNode->ret.expr = expr;
   return retNode; 
 }
+
+ast_list_t *ast_list_new_node (ast_t *elem) {
+  ast_list_t *node = (ast_list_t *)malloc(sizeof(ast_list_t));
+  node->node = elem;
+  node->next = NULL;
+  return node;
+}
+
+ast_list_t *ast_list_add (ast_list_t **list, ast_t *elem) {
+  ast_list_t *node = ast_list_new_node(elem);
+  //Ajouter node au next de list 
+}
