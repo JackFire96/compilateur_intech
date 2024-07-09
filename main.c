@@ -5,7 +5,7 @@
 
 int main() {
     // Exemple avec un fichier
-    FILE *file = fopen("exemple.txt", "r");
+    FILE *file = fopen("exemple.intech", "r");
     if (file == NULL) {
         perror("Erreur lors de l'ouverture du fichier");
         return 1;
