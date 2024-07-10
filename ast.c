@@ -156,7 +156,42 @@ ast_list_t *ast_list_new_node (ast_t *elem) {
   return node;
 }
 
-ast_list_t *ast_list_add (ast_list_t **list, ast_t *elem) {
+void ast_list_add (ast_list_t **list, ast_t *elem) {
   ast_list_t *node = ast_list_new_node(elem);
-  //Ajouter node au next de list 
+    if (*list == NULL) {
+        *list = node;
+    } else {
+        ast_list_t *current = *list;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = node;
+    }
+}
+
+const char* ast_node_type_to_string(ast_node_type_e type) {
+    switch (type) {
+        case AST_VOID: return "AST_VOID";
+        case AST_INTEGER: return "AST_INTEGER";
+        case AST_BINARY: return "AST_BINARY";
+        case AST_UNARY: return "AST_UNARY";
+        case AST_FUNCTION: return "AST_FUNCTION";
+        case AST_FNCALL: return "AST_FNCALL";
+        case AST_VARIABLE: return "AST_VARIABLE";
+        case AST_CONDITION: return "AST_CONDITION";
+        case AST_LOOP: return "AST_LOOP";
+        case AST_DECLARATION: return "AST_DECLARATION";
+        case AST_ASSIGNMENT: return "AST_ASSIGNMENT";
+        case AST_COMPOUND_STATEMENT: return "AST_COMPOUND_STATEMENT";
+        case AST_RETURN: return "AST_RETURN";
+        default: return "UNKNOWN_TYPE";
+    }
+}
+
+void print_ast_list(ast_list_t *list) {
+    while (list != NULL) {
+        ast_t *node = list->node;
+        printf("Node type: %s\n", ast_node_type_to_string(node->type));
+        list = list->next;
+    }
 }

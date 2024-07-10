@@ -113,7 +113,9 @@ ast_t *ast_new_condition (ast_t *condition, ast_t *valid, ast_t *invalid);
 ast_t *ast_new_loop (ast_t *condition, ast_t *stmt);
 ast_t *ast_new_return (ast_t *expr);
 ast_list_t *ast_list_new_node (ast_t *elem);
-ast_list_t *ast_list_add (ast_list_t **list, ast_t *elem);
+void ast_list_add (ast_list_t **list, ast_t *elem);
+const char* ast_node_type_to_string(ast_node_type_e type);
+void print_ast_list(ast_list_t *list);
 
 
 #define AST_H
